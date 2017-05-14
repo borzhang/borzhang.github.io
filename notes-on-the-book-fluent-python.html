@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<head>
+    <title>Notes on the book Fluent Python - zuomo</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+<link rel="canonical" href="https://borzhang.github.io/notes-on-the-book-fluent-python.html">
+
+        <meta name="author" content="borzhang" />
+        <meta name="keywords" content="python" />
+        <meta name="description" content="I&#39;m just writing my understanding, or copying &amp; pasting some segments from the book if those sentences are brief and meaningful themselves. What is the so-called &#34;Python data model&#34;? It&#39;s the way how python organizes data into objects. There&#39;re actually two ways for python to organize data, one is called &#34;types …" />
+
+        <meta property="og:site_name" content="zuomo" />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="Notes on the book Fluent Python"/>
+        <meta property="og:url" content="https://borzhang.github.io/notes-on-the-book-fluent-python.html"/>
+        <meta property="og:description" content="I&#39;m just writing my understanding, or copying &amp; pasting some segments from the book if those sentences are brief and meaningful themselves. What is the so-called &#34;Python data model&#34;? It&#39;s the way how python organizes data into objects. There&#39;re actually two ways for python to organize data, one is called &#34;types …"/>
+        <meta property="article:published_time" content="2016-11-04" />
+            <meta property="article:section" content="misc" />
+            <meta property="article:tag" content="python" />
+            <meta property="article:author" content="borzhang" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://borzhang.github.io/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="https://borzhang.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="https://borzhang.github.io/theme/css/pygments/native.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://borzhang.github.io/theme/css/style.css" type="text/css"/>
+
+        <link href="https://borzhang.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="zuomo ATOM Feed"/>
+
+
+
+        <link href="https://borzhang.github.io/feeds/misc.atom.xml" type="application/atom+xml" rel="alternate"
+              title="zuomo misc ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="https://borzhang.github.io/" class="navbar-brand">
+zuomo            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="https://borzhang.github.io/category/misc.html">Misc</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="https://borzhang.github.io/notes-on-the-book-fluent-python.html"
+                       rel="bookmark"
+                       title="Permalink to Notes on the book Fluent Python">
+                        Notes on the book Fluent Python
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2016-11-04T00:00:00+08:00"> Fri, 04 Nov 2016</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="https://borzhang.github.io/tag/python.html">python</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>I'm just writing my understanding, or copying &amp; pasting some segments from the book if those sentences are brief and meaningful themselves. </p>
+<ul>
+<li>
+<p><strong>What is the so-called "Python data model"?</strong></p>
+<p>It's the way how python organizes data into objects. There're actually two ways for python to organize data, one is called "types and objects". Here's <a href="http://www.cafepy.com/article/python_types_and_objects/python_types_and_objects.html">an excellent material</a> about this topic. </p>
+<p>In words, we can view there are 3 layers of objects that can be defined in python, called metaclass, class and "instances". Actually they are all objects. All classes (except a special one), including metaclasses, have a common root base class, which is the class <code>object</code>, standing at the top of the second layer. The class <code>object</code> is the only one class that have no base classes, representing by the built-in attribute <code>.__bases__</code>.  </p>
+<p>Each objects in python has its own mother, who instantiates it. This mother object is recorded in the built-in attribute <code>.__class__</code>. Therefore all objects have non-empty <code>.__class__</code> attribute. Here comes a problem, who's the root mother, and the mother of this root? Python solve this problem by setting the root mother <code>type</code> pointing itself, namely <code>type.__class__ is type</code> results in a <code>True</code>. <code>type</code>, as a class, is actually a metaclass, which instantiate all classes by default. It's the only one default metaclass pre-defined in python. Now we have a interesting loop: <code>type</code> is an instance of itself, <code>type</code> as a class is a subclass of <code>object</code>, so <code>type</code> is an instance of <code>object</code>; on the other hand, <code>object</code> as a class is instantiated by the metaclass <code>type</code>, so <code>object</code> is an instance of <code>type</code>.  </p>
+<p>Notice that the class/metaclass <code>type</code> is a pre-defined object in python, it's not the one in the phrase "types and objects". For "types and objects", this "type" denotes "class", they are two equivalent concepts. A non-meta-class can instantiate objects, here we use the word "instances". Those instances are not allowed to further instantiate objects. That's why there're only 3 layers of objects: the root metaclass <code>type</code> creates itself (by definition) and all classes (which in the second layer), classes create instances, which in the last layer. A class is also called a type. There're many pre-defines types in python, such as <code>list</code>, <code>int</code>, <code>function</code>, etc.</p>
+<p>As document says, every object has an identity, a type and a value. Its type, or class, is who creates it, recorded in <code>.__class__</code>, and can be retrieved by <code>type(yourobject)</code>. </p>
+<p>One more thing to mention about types: all types(classes) are singletons. You cannot define two identical classes with same names. <code>type(yourobject)</code> is actually a class creator, where <code>type</code> is not a function but a class name. However the class created (here we can roughly use the word "returned") by this expression is exactly the <strong>one</strong> who creates <code>yourobject</code>.</p>
+<p>Another way to organize data is by protocols and interfaces. For example the descriptor protocol is only a protocol, or a set of interfaces, not a type in python. If an object has a method <code>__get__(self, obj, typ)</code>, then it can be called a descriptor, which does not mean the type of this object is "descriptor". Likewise, iterator and sequence are both protocols, corresponding to <code>next()</code> and <code>__getitem__()</code> methods respectively. </p>
+<p>So in python we have an explicit taxonomy of data, called "types and objects", we can make use of it by subclassing. And also we have an implicit taxonomy, which is the protocol way, we can exploit by implementing the relevant interface methods. For instance we can implement a <code>__getitem__()</code> method in order to have all the operations and properties of operator <code>[]</code>, which is viewed as a sequence. </p>
+</li>
+<li>
+<p><strong>Difference between <code>repr()</code> and <code>str()</code></strong></p>
+<p>In short, <code>repr()</code> is nearer to the true form of objects, while <code>str()</code> is for display to end users. </p>
+<div class="highlight"><pre><span></span>&gt;&gt;&gt; print(repr(&#39;1&#39;), repr(1))
+(&quot;&#39;1&#39;&quot;, &#39;1&#39;)
+&gt;&gt;&gt; print(str(&#39;1&#39;), str(1))
+(&#39;1&#39;, &#39;1&#39;)
+</pre></div>
+
+
+<p>Usually we want to form the result of <code>repr()</code> to be as a constructor, in other words if we run <code>eval()</code> with this result as the argument, it will result in a same object. </p>
+</li>
+<li>
+<p><strong>Tips on sequence (Chapter 2)</strong></p>
+<ul>
+<li>
+<p>Look at this neat diagram. </p>
+<p><img alt="UML class diagram for sequences" src="sequences.png">
+Here names in <em>italic</em> are abstract classes and abstract methods. </p>
+</li>
+<li>
+<p>List comprehensions used for Cartesian products</p>
+<div class="highlight"><pre><span></span>&gt;&gt;&gt; tshirts = [(color, size) for color in colors for size in sizes]
+</pre></div>
+
+
+</li>
+<li>
+<p>Generator expressions</p>
+<p>Just replace the brackets in listcomps by parentheses. Instead of lists, generator expressions result in generators.</p>
+</li>
+<li>
+<p>Use the * to grab excess items</p>
+<p>This is only available in Python 3. </p>
+<div class="highlight"><pre><span></span>&gt;&gt;&gt; a, b, *rest = range(5)
+&gt;&gt;&gt; a, b, rest
+(0, 1, [2, 3, 4])
+&gt;&gt;&gt; a, *body, c, d = range(5)
+&gt;&gt;&gt; a, body, c, d
+(0, [1, 2], 3, 4)
+</pre></div>
+
+
+</li>
+<li>
+<p>Tuples are not just immutable lists</p>
+<p>They can be used as records, and even named records with <code>collections.namedtuple</code>. Use tuple unpacking to shorten your codes. </p>
+</li>
+<li>
+<p>"Tuple unpacking" is not only for tuples</p>
+<p>Unpacking mechanism works with any iterable object. The corresponding byte code is <code>UNPACK_SEQUENCE</code>. </p>
+</li>
+<li>
+<p>Slicing</p>
+<p>The <code>__getitem__</code> and <code>__setitem__</code> special methods that handle the <code>[]</code> operator simply receive the indices in <code>a[i, j]</code> as a tuple. In other words, to evaluate <code>a[i, j]</code>, Python calls <code>a.__getitem__((i, j))</code>.</p>
+<p>Slicing can also be done in this multidimensional form, for instance <code>a[m:n, k:l]</code>. </p>
+<p>NumPy uses <code>...</code> as a shortcut when slicing arrays of many dimensions; for example, if <code>x</code> is a four-dimensional array, <code>x[i, ...]</code> is a shortcut for <code>x[i, :, :, :,]</code>.</p>
+<p>The organization of mutable sequences is pretty loose. We can delete or modify a mutable sequence with almost any means:</p>
+<div class="highlight"><pre><span></span>&gt;&gt;&gt; l = list(range(10))
+&gt;&gt;&gt; l
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+&gt;&gt;&gt; l[2:5] = [20, 30]
+&gt;&gt;&gt; l
+[0, 1, 20, 30, 5, 6, 7, 8, 9]
+&gt;&gt;&gt; del l[5:7]
+&gt;&gt;&gt; l
+[0, 1, 20, 30, 5, 8, 9]
+&gt;&gt;&gt; l[3::2] = [11, 22]
+&gt;&gt;&gt; l
+[0, 1, 20, 11, 5, 22, 9]
+</pre></div>
+
+
+</li>
+<li>
+<p>In-place operation</p>
+<p><code>+=</code> and <code>*=</code> operators are of this kind. In both cases of normal and in-place assignment, it first evaluates the object being assigned, then assigns it to the name. The difference between <code>a=a+b</code> and <code>a+=b</code> happens in the object. The former one will generate a new object of value <code>a+b</code>, while the later will, if possible, operates the objects referred by <code>a</code> directly, for instance executes <code>a.extend(b)</code>. </p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>How to understand python's tuple</strong></p>
+<p>Tuple is known as a container type, but in my understanding, we'd better not view it as a traditional "container". People say that a series of items concatenated by commas is actually a tuple, so just view it as with a pair of parentheses. But I'd rather think of any tuples as <strong>without parentheses</strong>. Tuple is not a traditional container, it's only a permutation of items. When you write it down, then it is fixed, because it's the permutation of those items you just wrote. You can access its elements using the <code>[]</code> operator because python offers you this simple way to access, this is the special setting of tuple in python. But after all, you cannot assign any value to those items. This is obvious when you think of it as a permutation of fixed items. </p>
+</li>
+<li>
+<p><strong>About python bytecode and other internals</strong></p>
+<p>Refer to this <a href="http://akaptur.com/blog/2013/11/15/introduction-to-the-python-interpreter/">wonderful series of articles</a>. There's also an <a href="http://akaptur.com/blog/2014/06/11/of-syntax-warnings-and-symbol-tables/">article</a> introducing some other internals. Bytecode seems to be quite low-level, but actually it's the opposite. The result highly depends on the low-level implementation. The <a href="http://akaptur.com/blog/2013/12/03/introduction-to-the-python-interpreter-4/">4th part</a> of that series gives a nice example: </p>
+<div class="highlight"><pre><span></span>&gt;&gt;&gt; def modulus(x, y):
+...     return x % y
+...
+&gt;&gt;&gt; [ord(b) for b in modulus.func_code.co_code]
+[124, 0, 0, 124, 1, 0, 22, 83]
+&gt;&gt;&gt; dis.dis(modulus.func_code)
+  2           0 LOAD_FAST                0 (x)
+              3 LOAD_FAST                1 (y)
+              6 BINARY_MODULO
+              7 RETURN_VALUE
+&gt;&gt;&gt; modulus(15,4)
+3
+&gt;&gt;&gt; modulus(&quot;hello %s&quot;, &quot;world&quot;)
+&#39;hello world&#39;
+</pre></div>
+
+
+<p>See, the key point is indeed the implementation of <code>BINARY_MODULO</code>.</p>
+<p>There's a <a href="http://security.coverity.com/blog/2014/Nov/understanding-python-bytecode.html">deeper article</a> introducing bytecode from a reverse engineering viewpoint, in which only python binary file (ended with <code>pyc</code> or <code>pyo</code>) can be accessed. </p>
+</li>
+<li>
+<p><strong>A Python API convention</strong></p>
+<p>Functions or methods that change an object in place should return <code>None</code> to make it clear to the caller that the object itself was changed, no new object was created. </p>
+<p><code>sorted()</code> function returns a new sorted iterable, while <code>list.sort()</code> is an in-place method. </p>
+</li>
+<li>
+<p><strong>Binary search: <code>bisect</code></strong></p>
+<p>Use <code>bisect</code> for binary search. <code>bisect.bisect</code> for searching, <code>bisect.insort</code> for inserting after searching. 
+Here's a smart example in the book, notice that it uses binary search instead of a bunch of <code>if</code>, augment the performance and shorten the code. </p>
+<div class="highlight"><pre><span></span>&gt;&gt;&gt; def grade(score, breakpoints=[60, 70, 80, 90], grades=&#39;FDCBA&#39;):
+...     i = bisect.bisect(breakpoints, score)
+...     return grades[i]
+...
+&gt;&gt;&gt; [grade(score) for score in [33, 99, 77, 70, 89, 90, 100]]
+[&#39;F&#39;, &#39;A&#39;, &#39;C&#39;, &#39;C&#39;, &#39;B&#39;, &#39;A&#39;, &#39;A&#39;]
+</pre></div>
+
+
+</li>
+<li>
+<p><strong>The <code>memoryview</code> object</strong></p>
+</li>
+<li>
+<p><strong>Alternatives of <code>list</code></strong></p>
+<p>There are quite a few data structures can somehow substitute <code>list</code>. For example <code>array.array</code>, <code>numpy.narray</code>, <code>collections.deque</code>, and the module <code>Queue</code> including several classes for threaded programming and multiprocess programming. </p>
+</li>
+<li>
+<p><strong>The <code>key</code> argument</strong></p>
+<p><em>The <code>key</code> optional argument of list.sort, sorted, max, and min is a great idea. Other languages force you to provide a two-argument comparison function like the deprecated <code>cmp(a, b)</code> function in Python 2. Using <code>key</code> is both simpler and more efficient. It’s simpler because you just define a one-argument function that retrieves or calculates whatever criterion you want to use to sort your objects; this is easier than writing a two-argument function to return –1, 0, 1. It is also more efficient because the <code>key</code> function is invoked only once per item, while the two-argument comparison is called every time the sorting algorithm needs to compare two items. Of course, Python also has to compare the keys while sorting, but that comparison is done in optimized C code and not in a Python function that you wrote.</em></p>
+<p><em>By the way, using <code>key</code> actually lets us sort a mixed bag of numbers and number-like strings. You just need to decide whether you want to treat all items as integers or strings:</em></p>
+<div class="highlight"><pre><span></span>&gt;&gt;&gt; l = [28, 14, &#39;28&#39;, 5, &#39;9&#39;, &#39;1&#39;, 0, 6, &#39;23&#39;, 19]
+&gt;&gt;&gt; sorted(l, key=int)
+[0, &#39;1&#39;, 5, 6, &#39;9&#39;, 14, 19, &#39;23&#39;, 28, &#39;28&#39;]
+&gt;&gt;&gt; sorted(l, key=str)
+[0, &#39;1&#39;, 14, 19, &#39;23&#39;, 28, &#39;28&#39;, 5, 6, &#39;9&#39;]
+</pre></div>
+
+
+</li>
+<li>
+<p><strong>Tips on dictionaries and sets (Chapter 3)</strong></p>
+</li>
+</ul>
+            </div>
+            <!-- /.entry-content -->
+    <hr/>
+    <section class="comments" id="comments">
+        <h2>Comments</h2>
+
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+            var disqus_shortname = 'borzhang'; // required: replace example with your forum shortname
+
+                    var disqus_identifier = 'notes-on-the-book-fluent-python';
+                var disqus_url = 'https://borzhang.github.io/notes-on-the-book-fluent-python.html';
+
+            var disqus_config = function () {
+                this.language = "en";
+            };
+
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function () {
+                var dsq = document.createElement('script');
+                dsq.type = 'text/javascript';
+                dsq.async = true;
+                dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by
+            Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+    </section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+<!-- Sidebar -->
+<section class="well well-sm">
+  <ul class="list-group list-group-flush">
+
+<!-- Sidebar/Recent Posts -->
+<li class="list-group-item">
+  <h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+  <ul class="list-group" id="recentposts">
+    <li class="list-group-item"><a href="https://borzhang.github.io/notes-on-the-book-fluent-python.html">Notes on the book Fluent Python</a></li>
+    <li class="list-group-item"><a href="https://borzhang.github.io/notes-on-python.html">Notes on Python</a></li>
+    <li class="list-group-item"><a href="https://borzhang.github.io/notes-on-online-learning.html">Notes on Online Learning</a></li>
+    <li class="list-group-item"><a href="https://borzhang.github.io/notes-on-installing-the-development-version-of-scikit-learn.html">Notes on Installing the Development Version of Scikit-learn</a></li>
+    <li class="list-group-item"><a href="https://borzhang.github.io/procedure-of-blogging-with-pelican-and-github-on-windows.html">Procedure of Blogging with Pelican and Github on Windows</a></li>
+  </ul>
+</li>
+<!-- End Sidebar/Recent Posts -->
+
+<!-- Sidebar/Tag Cloud -->
+<li class="list-group-item">
+  <a href="https://borzhang.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+  <ul class="list-group " id="tags">
+    <li class="list-group-item tag-1">
+      <a href="https://borzhang.github.io/tag/python.html">python</a>
+    </li>
+    <li class="list-group-item tag-3">
+      <a href="https://borzhang.github.io/tag/scikit-learn.html">scikit-learn</a>
+    </li>
+    <li class="list-group-item tag-3">
+      <a href="https://borzhang.github.io/tag/pelican.html">pelican</a>
+    </li>
+    <li class="list-group-item tag-3">
+      <a href="https://borzhang.github.io/tag/tips.html">tips</a>
+    </li>
+    <li class="list-group-item tag-3">
+      <a href="https://borzhang.github.io/tag/machine-learning.html">Machine learning</a>
+    </li>
+  </ul>
+</li>
+<!-- End Sidebar/Tag Cloud -->
+  </ul>
+</section>
+<!-- End Sidebar -->            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2016 borzhang
+            &middot; Powered by <a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="https://borzhang.github.io/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://borzhang.github.io/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="https://borzhang.github.io/theme/js/respond.min.js"></script>
+
+    <!-- Disqus -->
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'borzhang'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script');
+            s.async = true;
+            s.type = 'text/javascript';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+    <!-- End Disqus Code -->
+
+
+</body>
+</html>

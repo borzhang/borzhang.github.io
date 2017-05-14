@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>zuomo - misc</title><link href="https://borzhang.github.io/" rel="alternate"></link><link href="https://borzhang.github.io/feeds/misc.atom.xml" rel="self"></link><id>https://borzhang.github.io/</id><updated>2016-11-04T00:00:00+08:00</updated><entry><title>Notes on the book Fluent Python</title><link href="https://borzhang.github.io/notes-on-the-book-fluent-python.html" rel="alternate"></link><published>2016-11-04T00:00:00+08:00</published><updated>2016-11-04T00:00:00+08:00</updated><author><name>borzhang</name></author><id>tag:borzhang.github.io,2016-11-04:/notes-on-the-book-fluent-python.html</id><summary type="html">&lt;p&gt;I'm just writing my understanding, or copying &amp;amp; pasting some segments from the book if those sentences are brief and meaningful themselves. &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;What is the so-called "Python data model"?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;It's the way how python organizes data into objects. There're actually two ways for python to organize data, one is called "types …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;I'm just writing my understanding, or copying &amp;amp; pasting some segments from the book if those sentences are brief and meaningful themselves. &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;What is the so-called "Python data model"?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;It's the way how python organizes data into objects. There're actually two ways for python to organize data, one is called "types and objects". Here's &lt;a href="http://www.cafepy.com/article/python_types_and_objects/python_types_and_objects.html"&gt;an excellent material&lt;/a&gt; about this topic. &lt;/p&gt;
+&lt;p&gt;In words, we can view there are 3 layers of objects that can be defined in python, called metaclass, class and "instances". Actually they are all objects. All classes (except a special one), including metaclasses, have a common root base class, which is the class &lt;code&gt;object&lt;/code&gt;, standing at the top of the second layer. The class &lt;code&gt;object&lt;/code&gt; is the only one class that have no base classes, representing by the built-in attribute &lt;code&gt;.__bases__&lt;/code&gt;.  &lt;/p&gt;
+&lt;p&gt;Each objects in python has its own mother, who instantiates it. This mother object is recorded in the built-in attribute &lt;code&gt;.__class__&lt;/code&gt;. Therefore all objects have non-empty &lt;code&gt;.__class__&lt;/code&gt; attribute. Here comes a problem, who's the root mother, and the mother of this root? Python solve this problem by setting the root mother &lt;code&gt;type&lt;/code&gt; pointing itself, namely &lt;code&gt;type.__class__ is type&lt;/code&gt; results in a &lt;code&gt;True&lt;/code&gt;. &lt;code&gt;type&lt;/code&gt;, as a class, is actually a metaclass, which instantiate all classes by default. It's the only one default metaclass pre-defined in python. Now we have a interesting loop: &lt;code&gt;type&lt;/code&gt; is an instance of itself, &lt;code&gt;type&lt;/code&gt; as a class is a subclass of &lt;code&gt;object&lt;/code&gt;, so &lt;code&gt;type&lt;/code&gt; is an instance of &lt;code&gt;object&lt;/code&gt;; on the other hand, &lt;code&gt;object&lt;/code&gt; as a class is instantiated by the metaclass &lt;code&gt;type&lt;/code&gt;, so &lt;code&gt;object&lt;/code&gt; is an instance of &lt;code&gt;type&lt;/code&gt;.  &lt;/p&gt;
+&lt;p&gt;Notice that the class/metaclass &lt;code&gt;type&lt;/code&gt; is a pre-defined object in python, it's not the one in the phrase "types and objects". For "types and objects", this "type" denotes "class", they are two equivalent concepts. A non-meta-class can instantiate objects, here we use the word "instances". Those instances are not allowed to further instantiate objects. That's why there're only 3 layers of objects: the root metaclass &lt;code&gt;type&lt;/code&gt; creates itself (by definition) and all classes (which in the second layer), classes create instances, which in the last layer. A class is also called a type. There're many pre-defines types in python, such as &lt;code&gt;list&lt;/code&gt;, &lt;code&gt;int&lt;/code&gt;, &lt;code&gt;function&lt;/code&gt;, etc.&lt;/p&gt;
+&lt;p&gt;As document says, every object has an identity, a type and a value. Its type, or class, is who creates it, recorded in &lt;code&gt;.__class__&lt;/code&gt;, and can be retrieved by &lt;code&gt;type(yourobject)&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;One more thing to mention about types: all types(classes) are singletons. You cannot define two identical classes with same names. &lt;code&gt;type(yourobject)&lt;/code&gt; is actually a class creator, where &lt;code&gt;type&lt;/code&gt; is not a function but a class name. However the class created (here we can roughly use the word "returned") by this expression is exactly the &lt;strong&gt;one&lt;/strong&gt; who creates &lt;code&gt;yourobject&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Another way to organize data is by protocols and interfaces. For example the descriptor protocol is only a protocol, or a set of interfaces, not a type in python. If an object has a method &lt;code&gt;__get__(self, obj, typ)&lt;/code&gt;, then it can be called a descriptor, which does not mean the type of this object is "descriptor". Likewise, iterator and sequence are both protocols, corresponding to &lt;code&gt;next()&lt;/code&gt; and &lt;code&gt;__getitem__()&lt;/code&gt; methods respectively. &lt;/p&gt;
+&lt;p&gt;So in python we have an explicit taxonomy of data, called "types and objects", we can make use of it by subclassing. And also we have an implicit taxonomy, which is the protocol way, we can exploit by implementing the relevant interface methods. For instance we can implement a &lt;code&gt;__getitem__()&lt;/code&gt; method in order to have all the operations and properties of operator &lt;code&gt;[]&lt;/code&gt;, which is viewed as a sequence. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Difference between &lt;code&gt;repr()&lt;/code&gt; and &lt;code&gt;str()&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In short, &lt;code&gt;repr()&lt;/code&gt; is nearer to the true form of objects, while &lt;code&gt;str()&lt;/code&gt; is for display to end users. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; print(repr(&amp;#39;1&amp;#39;), repr(1))
+(&amp;quot;&amp;#39;1&amp;#39;&amp;quot;, &amp;#39;1&amp;#39;)
+&amp;gt;&amp;gt;&amp;gt; print(str(&amp;#39;1&amp;#39;), str(1))
+(&amp;#39;1&amp;#39;, &amp;#39;1&amp;#39;)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Usually we want to form the result of &lt;code&gt;repr()&lt;/code&gt; to be as a constructor, in other words if we run &lt;code&gt;eval()&lt;/code&gt; with this result as the argument, it will result in a same object. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Tips on sequence (Chapter 2)&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Look at this neat diagram. &lt;/p&gt;
+&lt;p&gt;&lt;img alt="UML class diagram for sequences" src="sequences.png"&gt;
+Here names in &lt;em&gt;italic&lt;/em&gt; are abstract classes and abstract methods. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;List comprehensions used for Cartesian products&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; tshirts = [(color, size) for color in colors for size in sizes]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Generator expressions&lt;/p&gt;
+&lt;p&gt;Just replace the brackets in listcomps by parentheses. Instead of lists, generator expressions result in generators.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Use the * to grab excess items&lt;/p&gt;
+&lt;p&gt;This is only available in Python 3. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; a, b, *rest = range(5)
+&amp;gt;&amp;gt;&amp;gt; a, b, rest
+(0, 1, [2, 3, 4])
+&amp;gt;&amp;gt;&amp;gt; a, *body, c, d = range(5)
+&amp;gt;&amp;gt;&amp;gt; a, body, c, d
+(0, [1, 2], 3, 4)
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Tuples are not just immutable lists&lt;/p&gt;
+&lt;p&gt;They can be used as records, and even named records with &lt;code&gt;collections.namedtuple&lt;/code&gt;. Use tuple unpacking to shorten your codes. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;"Tuple unpacking" is not only for tuples&lt;/p&gt;
+&lt;p&gt;Unpacking mechanism works with any iterable object. The corresponding byte code is &lt;code&gt;UNPACK_SEQUENCE&lt;/code&gt;. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Slicing&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;__getitem__&lt;/code&gt; and &lt;code&gt;__setitem__&lt;/code&gt; special methods that handle the &lt;code&gt;[]&lt;/code&gt; operator simply receive the indices in &lt;code&gt;a[i, j]&lt;/code&gt; as a tuple. In other words, to evaluate &lt;code&gt;a[i, j]&lt;/code&gt;, Python calls &lt;code&gt;a.__getitem__((i, j))&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Slicing can also be done in this multidimensional form, for instance &lt;code&gt;a[m:n, k:l]&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;NumPy uses &lt;code&gt;...&lt;/code&gt; as a shortcut when slicing arrays of many dimensions; for example, if &lt;code&gt;x&lt;/code&gt; is a four-dimensional array, &lt;code&gt;x[i, ...]&lt;/code&gt; is a shortcut for &lt;code&gt;x[i, :, :, :,]&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The organization of mutable sequences is pretty loose. We can delete or modify a mutable sequence with almost any means:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; l = list(range(10))
+&amp;gt;&amp;gt;&amp;gt; l
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+&amp;gt;&amp;gt;&amp;gt; l[2:5] = [20, 30]
+&amp;gt;&amp;gt;&amp;gt; l
+[0, 1, 20, 30, 5, 6, 7, 8, 9]
+&amp;gt;&amp;gt;&amp;gt; del l[5:7]
+&amp;gt;&amp;gt;&amp;gt; l
+[0, 1, 20, 30, 5, 8, 9]
+&amp;gt;&amp;gt;&amp;gt; l[3::2] = [11, 22]
+&amp;gt;&amp;gt;&amp;gt; l
+[0, 1, 20, 11, 5, 22, 9]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In-place operation&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;+=&lt;/code&gt; and &lt;code&gt;*=&lt;/code&gt; operators are of this kind. In both cases of normal and in-place assignment, it first evaluates the object being assigned, then assigns it to the name. The difference between &lt;code&gt;a=a+b&lt;/code&gt; and &lt;code&gt;a+=b&lt;/code&gt; happens in the object. The former one will generate a new object of value &lt;code&gt;a+b&lt;/code&gt;, while the later will, if possible, operates the objects referred by &lt;code&gt;a&lt;/code&gt; directly, for instance executes &lt;code&gt;a.extend(b)&lt;/code&gt;. &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;How to understand python's tuple&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Tuple is known as a container type, but in my understanding, we'd better not view it as a traditional "container". People say that a series of items concatenated by commas is actually a tuple, so just view it as with a pair of parentheses. But I'd rather think of any tuples as &lt;strong&gt;without parentheses&lt;/strong&gt;. Tuple is not a traditional container, it's only a permutation of items. When you write it down, then it is fixed, because it's the permutation of those items you just wrote. You can access its elements using the &lt;code&gt;[]&lt;/code&gt; operator because python offers you this simple way to access, this is the special setting of tuple in python. But after all, you cannot assign any value to those items. This is obvious when you think of it as a permutation of fixed items. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;About python bytecode and other internals&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Refer to this &lt;a href="http://akaptur.com/blog/2013/11/15/introduction-to-the-python-interpreter/"&gt;wonderful series of articles&lt;/a&gt;. There's also an &lt;a href="http://akaptur.com/blog/2014/06/11/of-syntax-warnings-and-symbol-tables/"&gt;article&lt;/a&gt; introducing some other internals. Bytecode seems to be quite low-level, but actually it's the opposite. The result highly depends on the low-level implementation. The &lt;a href="http://akaptur.com/blog/2013/12/03/introduction-to-the-python-interpreter-4/"&gt;4th part&lt;/a&gt; of that series gives a nice example: &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; def modulus(x, y):
+...     return x % y
+...
+&amp;gt;&amp;gt;&amp;gt; [ord(b) for b in modulus.func_code.co_code]
+[124, 0, 0, 124, 1, 0, 22, 83]
+&amp;gt;&amp;gt;&amp;gt; dis.dis(modulus.func_code)
+  2           0 LOAD_FAST                0 (x)
+              3 LOAD_FAST                1 (y)
+              6 BINARY_MODULO
+              7 RETURN_VALUE
+&amp;gt;&amp;gt;&amp;gt; modulus(15,4)
+3
+&amp;gt;&amp;gt;&amp;gt; modulus(&amp;quot;hello %s&amp;quot;, &amp;quot;world&amp;quot;)
+&amp;#39;hello world&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;See, the key point is indeed the implementation of &lt;code&gt;BINARY_MODULO&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;There's a &lt;a href="http://security.coverity.com/blog/2014/Nov/understanding-python-bytecode.html"&gt;deeper article&lt;/a&gt; introducing bytecode from a reverse engineering viewpoint, in which only python binary file (ended with &lt;code&gt;pyc&lt;/code&gt; or &lt;code&gt;pyo&lt;/code&gt;) can be accessed. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;A Python API convention&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Functions or methods that change an object in place should return &lt;code&gt;None&lt;/code&gt; to make it clear to the caller that the object itself was changed, no new object was created. &lt;/p&gt;
+&lt;p&gt;&lt;code&gt;sorted()&lt;/code&gt; function returns a new sorted iterable, while &lt;code&gt;list.sort()&lt;/code&gt; is an in-place method. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Binary search: &lt;code&gt;bisect&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Use &lt;code&gt;bisect&lt;/code&gt; for binary search. &lt;code&gt;bisect.bisect&lt;/code&gt; for searching, &lt;code&gt;bisect.insort&lt;/code&gt; for inserting after searching. 
+Here's a smart example in the book, notice that it uses binary search instead of a bunch of &lt;code&gt;if&lt;/code&gt;, augment the performance and shorten the code. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; def grade(score, breakpoints=[60, 70, 80, 90], grades=&amp;#39;FDCBA&amp;#39;):
+...     i = bisect.bisect(breakpoints, score)
+...     return grades[i]
+...
+&amp;gt;&amp;gt;&amp;gt; [grade(score) for score in [33, 99, 77, 70, 89, 90, 100]]
+[&amp;#39;F&amp;#39;, &amp;#39;A&amp;#39;, &amp;#39;C&amp;#39;, &amp;#39;C&amp;#39;, &amp;#39;B&amp;#39;, &amp;#39;A&amp;#39;, &amp;#39;A&amp;#39;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;The &lt;code&gt;memoryview&lt;/code&gt; object&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Alternatives of &lt;code&gt;list&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There are quite a few data structures can somehow substitute &lt;code&gt;list&lt;/code&gt;. For example &lt;code&gt;array.array&lt;/code&gt;, &lt;code&gt;numpy.narray&lt;/code&gt;, &lt;code&gt;collections.deque&lt;/code&gt;, and the module &lt;code&gt;Queue&lt;/code&gt; including several classes for threaded programming and multiprocess programming. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;The &lt;code&gt;key&lt;/code&gt; argument&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;The &lt;code&gt;key&lt;/code&gt; optional argument of list.sort, sorted, max, and min is a great idea. Other languages force you to provide a two-argument comparison function like the deprecated &lt;code&gt;cmp(a, b)&lt;/code&gt; function in Python 2. Using &lt;code&gt;key&lt;/code&gt; is both simpler and more efficient. It’s simpler because you just define a one-argument function that retrieves or calculates whatever criterion you want to use to sort your objects; this is easier than writing a two-argument function to return –1, 0, 1. It is also more efficient because the &lt;code&gt;key&lt;/code&gt; function is invoked only once per item, while the two-argument comparison is called every time the sorting algorithm needs to compare two items. Of course, Python also has to compare the keys while sorting, but that comparison is done in optimized C code and not in a Python function that you wrote.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;By the way, using &lt;code&gt;key&lt;/code&gt; actually lets us sort a mixed bag of numbers and number-like strings. You just need to decide whether you want to treat all items as integers or strings:&lt;/em&gt;&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&amp;gt;&amp;gt;&amp;gt; l = [28, 14, &amp;#39;28&amp;#39;, 5, &amp;#39;9&amp;#39;, &amp;#39;1&amp;#39;, 0, 6, &amp;#39;23&amp;#39;, 19]
+&amp;gt;&amp;gt;&amp;gt; sorted(l, key=int)
+[0, &amp;#39;1&amp;#39;, 5, 6, &amp;#39;9&amp;#39;, 14, 19, &amp;#39;23&amp;#39;, 28, &amp;#39;28&amp;#39;]
+&amp;gt;&amp;gt;&amp;gt; sorted(l, key=str)
+[0, &amp;#39;1&amp;#39;, 14, 19, &amp;#39;23&amp;#39;, 28, &amp;#39;28&amp;#39;, 5, 6, &amp;#39;9&amp;#39;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Tips on dictionaries and sets (Chapter 3)&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content><category term="python"></category></entry><entry><title>Notes on Python</title><link href="https://borzhang.github.io/notes-on-python.html" rel="alternate"></link><published>2016-10-06T00:00:00+08:00</published><updated>2016-10-06T00:00:00+08:00</updated><author><name>borzhang</name></author><id>tag:borzhang.github.io,2016-10-06:/notes-on-python.html</id><summary type="html">&lt;p&gt;Ah, I love python. Oh no, it's Python. Here's a memo just for myself, it's quite conceptional, not just a copy from document. It will be updated at any time. &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;What does it mean by "built-in" modules and names?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;It's with respect to the interpreter. Those modules built into the …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</summary><content type="html">&lt;p&gt;Ah, I love python. Oh no, it's Python. Here's a memo just for myself, it's quite conceptional, not just a copy from document. It will be updated at any time. &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;What does it mean by "built-in" modules and names?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;It's with respect to the interpreter. Those modules built into the interpreter are built-in modules. When you start an interpreter, using the interactive environment in the command line or an IDE like Pycharm or whatever ways else, those modules are already there. If you check all names your current module already defines by using &lt;code&gt;dir()&lt;/code&gt;, you probably get a result like &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[&amp;#39;__builtins__&amp;#39;, &amp;#39;__doc__&amp;#39;, &amp;#39;__name__&amp;#39;, &amp;#39;__package__&amp;#39;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;That means some actions are done when the interpreter starts. Here the value of the name &lt;code&gt;__builtins__&lt;/code&gt; is usually the standard module &lt;code&gt;__builtin__&lt;/code&gt;. So if you further check all names defined in this module using &lt;code&gt;dir(__builtins__)&lt;/code&gt;, you'll get a bunch of names like follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;[&amp;#39;ArithmeticError&amp;#39;, &amp;#39;AssertionError&amp;#39;, &amp;#39;AttributeError&amp;#39;, &amp;#39;BaseException&amp;#39;, &amp;#39;BufferError&amp;#39;, &amp;#39;BytesWarning&amp;#39;, &amp;#39;DeprecationWarning&amp;#39;, &amp;#39;EOFError&amp;#39;, &amp;#39;Ellipsis&amp;#39;, &amp;#39;EnvironmentError&amp;#39;, &amp;#39;Exception&amp;#39;, &amp;#39;False&amp;#39;, &amp;#39;FloatingPointError&amp;#39;, &amp;#39;FutureWarning&amp;#39;, &amp;#39;GeneratorExit&amp;#39;, &amp;#39;IOError&amp;#39;, &amp;#39;ImportError&amp;#39;, &amp;#39;ImportWarning&amp;#39;, &amp;#39;IndentationError&amp;#39;, &amp;#39;IndexError&amp;#39;, &amp;#39;KeyError&amp;#39;, &amp;#39;KeyboardInterrupt&amp;#39;, &amp;#39;LookupError&amp;#39;, &amp;#39;MemoryError&amp;#39;, &amp;#39;NameError&amp;#39;, &amp;#39;None&amp;#39;, &amp;#39;NotImplemented&amp;#39;, &amp;#39;NotImplementedError&amp;#39;, &amp;#39;OSError&amp;#39;, &amp;#39;OverflowError&amp;#39;, &amp;#39;PendingDeprecationWarning&amp;#39;, &amp;#39;ReferenceError&amp;#39;, &amp;#39;RuntimeError&amp;#39;, &amp;#39;RuntimeWarning&amp;#39;, &amp;#39;StandardError&amp;#39;, &amp;#39;StopIteration&amp;#39;, &amp;#39;SyntaxError&amp;#39;, &amp;#39;SyntaxWarning&amp;#39;, &amp;#39;SystemError&amp;#39;, &amp;#39;SystemExit&amp;#39;, &amp;#39;TabError&amp;#39;, &amp;#39;True&amp;#39;, &amp;#39;TypeError&amp;#39;, &amp;#39;UnboundLocalError&amp;#39;, &amp;#39;UnicodeDecodeError&amp;#39;, &amp;#39;UnicodeEncodeError&amp;#39;, &amp;#39;UnicodeError&amp;#39;, &amp;#39;UnicodeTranslateError&amp;#39;, &amp;#39;UnicodeWarning&amp;#39;, &amp;#39;UserWarning&amp;#39;, &amp;#39;ValueError&amp;#39;, &amp;#39;Warning&amp;#39;, &amp;#39;WindowsError&amp;#39;, &amp;#39;ZeroDivisionError&amp;#39;, &amp;#39;_&amp;#39;, &amp;#39;__debug__&amp;#39;, &amp;#39;__doc__&amp;#39;, &amp;#39;__import__&amp;#39;, &amp;#39;__name__&amp;#39;, &amp;#39;__package__&amp;#39;, &amp;#39;abs&amp;#39;, &amp;#39;all&amp;#39;, &amp;#39;any&amp;#39;, &amp;#39;apply&amp;#39;, &amp;#39;basestring&amp;#39;, &amp;#39;bin&amp;#39;, &amp;#39;bool&amp;#39;, &amp;#39;buffer&amp;#39;, &amp;#39;bytearray&amp;#39;, &amp;#39;bytes&amp;#39;, &amp;#39;callable&amp;#39;, &amp;#39;chr&amp;#39;, &amp;#39;classmethod&amp;#39;, &amp;#39;cmp&amp;#39;, &amp;#39;coerce&amp;#39;, &amp;#39;compile&amp;#39;, &amp;#39;complex&amp;#39;, &amp;#39;copyright&amp;#39;, &amp;#39;credits&amp;#39;, &amp;#39;delattr&amp;#39;, &amp;#39;dict&amp;#39;, &amp;#39;dir&amp;#39;, &amp;#39;divmod&amp;#39;, &amp;#39;enumerate&amp;#39;, &amp;#39;eval&amp;#39;, &amp;#39;execfile&amp;#39;, &amp;#39;exit&amp;#39;, &amp;#39;file&amp;#39;, &amp;#39;filter&amp;#39;, &amp;#39;float&amp;#39;, &amp;#39;format&amp;#39;, &amp;#39;frozenset&amp;#39;, &amp;#39;getattr&amp;#39;, &amp;#39;globals&amp;#39;, &amp;#39;hasattr&amp;#39;, &amp;#39;hash&amp;#39;, &amp;#39;help&amp;#39;, &amp;#39;hex&amp;#39;, &amp;#39;id&amp;#39;, &amp;#39;input&amp;#39;, &amp;#39;int&amp;#39;, &amp;#39;intern&amp;#39;, &amp;#39;isinstance&amp;#39;, &amp;#39;issubclass&amp;#39;, &amp;#39;iter&amp;#39;, &amp;#39;len&amp;#39;, &amp;#39;license&amp;#39;, &amp;#39;list&amp;#39;, &amp;#39;locals&amp;#39;, &amp;#39;long&amp;#39;, &amp;#39;map&amp;#39;, &amp;#39;max&amp;#39;, &amp;#39;memoryview&amp;#39;, &amp;#39;min&amp;#39;, &amp;#39;next&amp;#39;, &amp;#39;object&amp;#39;, &amp;#39;oct&amp;#39;, &amp;#39;open&amp;#39;, &amp;#39;ord&amp;#39;, &amp;#39;pow&amp;#39;, &amp;#39;print&amp;#39;, &amp;#39;property&amp;#39;, &amp;#39;quit&amp;#39;, &amp;#39;range&amp;#39;, &amp;#39;raw_input&amp;#39;, &amp;#39;reduce&amp;#39;, &amp;#39;reload&amp;#39;, &amp;#39;repr&amp;#39;, &amp;#39;reversed&amp;#39;, &amp;#39;round&amp;#39;, &amp;#39;set&amp;#39;, &amp;#39;setattr&amp;#39;, &amp;#39;slice&amp;#39;, &amp;#39;sorted&amp;#39;, &amp;#39;staticmethod&amp;#39;, &amp;#39;str&amp;#39;, &amp;#39;sum&amp;#39;, &amp;#39;super&amp;#39;, &amp;#39;tuple&amp;#39;, &amp;#39;type&amp;#39;, &amp;#39;unichr&amp;#39;, &amp;#39;unicode&amp;#39;, &amp;#39;vars&amp;#39;, &amp;#39;xrange&amp;#39;, &amp;#39;zip&amp;#39;]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Notice that this whole series of modules are already built in your interpreter, you can use or check them directly specifying their names without importing. &lt;/p&gt;
+&lt;p&gt;But what's a bit funny is that the module &lt;code&gt;__builtin__&lt;/code&gt; itself is not a built-in module. The value of the built-in variable &lt;code&gt;__builtins__&lt;/code&gt; is this module. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;What is the list of paths used for the interpreter to search for modules?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The variable &lt;code&gt;sys.path&lt;/code&gt;. It's initialized with the environment variable &lt;code&gt;PYTHONPATH&lt;/code&gt; or a built-in default. Its type is python list. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;How to check linear algebra library linked in numpy?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There's &lt;a href="http://stackoverflow.com/questions/9000164/how-to-check-blas-lapack-linkage-in-numpy-scipy"&gt;a question on stackoverflow&lt;/a&gt;, see the most voted answer, which is not the accepted one.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;numpy&lt;/span&gt; &lt;span class="kn"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;np&lt;/span&gt;
+&lt;span class="o"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class="n"&gt;np&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__config__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;What is metaclass?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;There's &lt;a href="http://stackoverflow.com/questions/100003/what-is-a-metaclass-in-python"&gt;a perfect answer on stackoverflow&lt;/a&gt;, see the most voted but not accepted one. But there's an even better &lt;a href="https://blog.ionelmc.ro/2015/02/09/understanding-python-metaclasses/"&gt;article&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;In short, &lt;code&gt;class&lt;/code&gt; (here we assume old-style class is gone from python, we will never use it) is a class, &lt;code&gt;type&lt;/code&gt; is also a class, and classes are all objects in python. When representing a noun, the word &lt;code&gt;class&lt;/code&gt; is usually used for user-defined classes, and &lt;code&gt;type&lt;/code&gt; for built-in classes. &lt;/p&gt;
+&lt;p&gt;&lt;code&gt;type(yourobject)&lt;/code&gt; is not a function but a class creator. However it often acts as a function. It creates an "type" object (a class), which is the type of this object. &lt;code&gt;type(name, bases, dict)&lt;/code&gt; returns a new "type" object (a class), it's actually a dynamic form of the &lt;code&gt;class&lt;/code&gt; statement. So in the second way, &lt;code&gt;type&lt;/code&gt; creates a class object, just as &lt;code&gt;class&lt;/code&gt; statement does. What creates class objects is called &lt;strong&gt;metaclass&lt;/strong&gt;. &lt;code&gt;type&lt;/code&gt; is the default metaclass used by python. You can set your metaclass to replace &lt;code&gt;type&lt;/code&gt; to create a class, by putting &lt;code&gt;__metaclass__=yourmetaclass&lt;/code&gt; under &lt;code&gt;class Yourclass(baseclass):&lt;/code&gt; statement. &lt;/p&gt;
+&lt;p&gt;Roughly speaking, &lt;code&gt;thisobject.__class__&lt;/code&gt; attribute is just "who creates this object". If &lt;code&gt;thisobject&lt;/code&gt; is a class, then the value of &lt;code&gt;thisobject.__class__&lt;/code&gt; is the metaclass who created it, usually &lt;code&gt;type&lt;/code&gt;. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;What is proxy object?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Refer to this excellent &lt;a href="http://mindtrove.info/python-weak-references/"&gt;article&lt;/a&gt;, and the &lt;a href="https://docs.python.org/2/library/weakref.html?highlight=proxy#weakref.proxy"&gt;document&lt;/a&gt;. In short, a proxy object can be used just like a strong reference of an object, say if &lt;code&gt;a = Foo(); b = weakref.proxy(a)&lt;/code&gt;, then you can just use &lt;code&gt;b&lt;/code&gt; like &lt;code&gt;a&lt;/code&gt;, &lt;code&gt;b&lt;/code&gt; is an alternative of &lt;code&gt;a&lt;/code&gt;. When &lt;code&gt;a&lt;/code&gt; is deleted, for example by &lt;code&gt;del a&lt;/code&gt;, then that object is deleted, and further using of &lt;code&gt;b&lt;/code&gt; will raise exceptions. &lt;/p&gt;
+&lt;p&gt;If &lt;code&gt;b = weakref.ref(a)&lt;/code&gt;, then &lt;code&gt;b&lt;/code&gt; is a weak reference, which is a callable. We retrieve the pointed object by calling it: &lt;code&gt;b()&lt;/code&gt;. When &lt;code&gt;a&lt;/code&gt; is deleted, then calling &lt;code&gt;b()&lt;/code&gt; will get &lt;code&gt;None&lt;/code&gt; without any exception. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;What is closure?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Refer to this &lt;a href="http://www.shutupandship.com/2012/01/python-closures-explained.html"&gt;article&lt;/a&gt;. I'd like to just put the summary in that article here, because it's brief and clear enough:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Closure is just a fancy name for a function that remembers the values from the enclosing lexical scope even when the program flow is no longer in the enclosing scope.&lt;/li&gt;
+&lt;li&gt;If you've ever written a function that returned another function, you may have used closures. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So there's nothing deep or mysterious. &lt;code&gt;func.__closure__&lt;/code&gt; is a tuple including details of the variables defined in the enclosing scope, one can access the content of those variables using &lt;code&gt;func.__closure__[i].cell_contents&lt;/code&gt;. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;What is "method"?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Refer to this &lt;a href="http://stackoverflow.com/questions/3786881/what-is-a-method-in-python"&gt;question&lt;/a&gt;, the answer by AndiDog, not the most voted one. In short, a method is a function defined in a class definition. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;What is the use of &lt;code&gt;-m&lt;/code&gt; in the command &lt;code&gt;python -m themodule&lt;/code&gt;?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Two uses. One is in the case that you're in some directory other than the path in &lt;code&gt;sys.path&lt;/code&gt;, but you want to run a built-in module, like &lt;code&gt;SimpleHTTPServer&lt;/code&gt;. Another is when your objective module is in the path &lt;code&gt;dira/&lt;/code&gt;, but it requires external modules in &lt;code&gt;dirb/&lt;/code&gt;, then you can walk into &lt;code&gt;dirb/&lt;/code&gt; and run &lt;code&gt;python -m dira/yourmodule&lt;/code&gt;. The underlying reason is that &lt;code&gt;-m&lt;/code&gt; will search along &lt;code&gt;sys.path&lt;/code&gt;, and current working diretory will be the first path in &lt;code&gt;sys.path&lt;/code&gt;. By the way, &lt;code&gt;__name__&lt;/code&gt; is always &lt;code&gt;__main__&lt;/code&gt; with or without &lt;code&gt;-m&lt;/code&gt;. &lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content><category term="python"></category></entry><entry><title>Notes on Online Learning</title><link href="https://borzhang.github.io/notes-on-online-learning.html" rel="alternate"></link><published>2016-10-02T15:01:00+08:00</published><updated>2016-10-02T15:01:00+08:00</updated><author><name>borzhang</name></author><id>tag:borzhang.github.io,2016-10-02:/notes-on-online-learning.html</id><summary type="html">&lt;p&gt;Note: When I take notes on some technical topics, I'll skip basic stuff to save time. What I write down will be mostly problems/results that I've not been familiar with. &lt;/p&gt;
+&lt;p&gt;I'm reading basically two quite serious materials about online learning, namely &lt;a href="https://en.wikipedia.org/wiki/Online_machine_learning"&gt;the Wikipedia page&lt;/a&gt; and &lt;a href="http://www.nowpublishers.com/article/Details/MAL-018"&gt;a long article&lt;/a&gt; published …&lt;/p&gt;</summary><content type="html">&lt;p&gt;Note: When I take notes on some technical topics, I'll skip basic stuff to save time. What I write down will be mostly problems/results that I've not been familiar with. &lt;/p&gt;
+&lt;p&gt;I'm reading basically two quite serious materials about online learning, namely &lt;a href="https://en.wikipedia.org/wiki/Online_machine_learning"&gt;the Wikipedia page&lt;/a&gt; and &lt;a href="http://www.nowpublishers.com/article/Details/MAL-018"&gt;a long article&lt;/a&gt; published on "Foundations and Trends in Machine Learning". Here's some notes.&lt;/p&gt;
+&lt;h4&gt;Concepts clarification&lt;/h4&gt;
+&lt;p&gt;Model is about assumptions, forms, parameters and goals.
+During solving a model's objective, one can get a form of some algorithm.
+Algorithm is about process of computation, can be used for multiple models.
+With different assumptions and conditions, same algorithms can have different results in convergence analysis.
+SGD is an algorithm. So are its variants.&lt;/p&gt;
+&lt;h4&gt;Statistical learning models&lt;/h4&gt;
+&lt;p&gt;Statistical learning models are the case that the training sample &lt;span class="math"&gt;\((x_i,y_i)\)&lt;/span&gt; are assumed to be drawn * i.i.d* from the true distribution &lt;span class="math"&gt;\(p(x,y)\)&lt;/span&gt;. The objective is to minimize the expected risk
+&lt;/p&gt;
+&lt;div class="math"&gt;$$$ I[f] = \mathbb{E}[V(f(x),y)]=\int V(f(x),y)dp(x,y).$$&lt;/div&gt;
+&lt;p&gt;$&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; From recursive least squares to stochastic gradient descent.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; Incremental SGD&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; Kernel method&lt;/strong&gt;
+Basically it's another viewpoint of iteration.&lt;/p&gt;
+&lt;h4&gt;Adversarial models: Sequential learning&lt;/h4&gt;
+&lt;p&gt;The difference from statistical learning models is that there's no i.i.d. assumption in this case. The concept "regret" is based on this case. The objective is to minimize regret, instead of expected risk.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; Online convex optimization&lt;/strong&gt;
+To handle non-convex cases, people use convexification. Two ways: by randomisation, and by surrogate loss functions.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; Follow the leader (FTL) and Follow the regularized leader (FTRL)&lt;/strong&gt;
+are they related to mirror descent?
+dual averaging is involved.
+check out what is "linear loss function" which is written as a inner product in this doc.
+In the case of linear loss, FTRL can be reduced to SGD.
+Notice that SGD itself has nothing to do with the i.i.d. assumption. 
+This assumption is for theoritical analysis.
+Here lazy projection is also involved.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; Online subgradient descent (OSD)&lt;/strong&gt;
+It's just a generalization of SGD. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt; Other algorithms&lt;/strong&gt;
+- online mirror descent
+- prediction with expert advice&lt;/p&gt;
+&lt;h4&gt;Comparison of the models&lt;/h4&gt;
+&lt;p&gt;The paradigm of online learning interestingly has three distinct interpretations depending on the choice of the learning model.
+The standard SGD is used for this discussion. The form is 
+&lt;/p&gt;
+&lt;div class="math"&gt;$$
+w_t=w_{t-1}-\gamma_t\nabla V(\langle w_{t-1},x_t\rangle,y_t)
+$$&lt;/div&gt;
+&lt;script type="text/javascript"&gt;if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {
+    var align = "center",
+        indent = "0em",
+        linebreak = "false";
+
+    if (false) {
+        align = (screen.width &lt; 768) ? "left" : align;
+        indent = (screen.width &lt; 768) ? "0em" : indent;
+        linebreak = (screen.width &lt; 768) ? 'true' : linebreak;
+    }
+
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML';
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } }," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '"+ align +"'," +
+        "    displayIndent: '"+ indent +"'," +
+        "    showMathMenu: true," +
+        "    messageStyle: 'normal'," +
+        "    tex2jax: { " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: true," +
+        "        preview: 'TeX'," +
+        "    }, " +
+        "    'HTML-CSS': { " +
+        "        styles: { '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {color: 'inherit ! important'} }," +
+        "        linebreaks: { automatic: "+ linebreak +", width: '90% container' }," +
+        "    }, " +
+        "}); " +
+        "if ('default' !== 'default') {" +
+            "MathJax.Hub.Register.StartupHook('HTML-CSS Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax['HTML-CSS'].FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+            "MathJax.Hub.Register.StartupHook('SVG Jax Ready',function () {" +
+                "var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;" +
+                "VARIANT['normal'].fonts.unshift('MathJax_default');" +
+                "VARIANT['bold'].fonts.unshift('MathJax_default-bold');" +
+                "VARIANT['italic'].fonts.unshift('MathJax_default-italic');" +
+                "VARIANT['-tex-mathit'].fonts.unshift('MathJax_default-italic');" +
+            "});" +
+        "}";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}
+&lt;/script&gt;</content><category term="Machine learning"></category></entry><entry><title>Notes on Installing the Development Version of Scikit-learn</title><link href="https://borzhang.github.io/notes-on-installing-the-development-version-of-scikit-learn.html" rel="alternate"></link><published>2016-10-02T15:00:00+08:00</published><updated>2016-10-02T15:00:00+08:00</updated><author><name>borzhang</name></author><id>tag:borzhang.github.io,2016-10-02:/notes-on-installing-the-development-version-of-scikit-learn.html</id><summary type="html">&lt;p&gt;I'm trying to install the development version of scikit-learn on Windows 7. Here's some notes. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;About setup.py&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In short, python &lt;em&gt;Distutils&lt;/em&gt; is responsible for both packaging/distributing packages and installing packages. Document says: First, both developers and installers have the same basic user interface, i.e. the setup script …&lt;/p&gt;</summary><content type="html">&lt;p&gt;I'm trying to install the development version of scikit-learn on Windows 7. Here's some notes. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;About setup.py&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In short, python &lt;em&gt;Distutils&lt;/em&gt; is responsible for both packaging/distributing packages and installing packages. Document says: First, both developers and installers have the same basic user interface, i.e. the setup script. The difference is which Distutils commands they use: the &lt;code&gt;sdist&lt;/code&gt; command is almost exclusive for module developers, while &lt;code&gt;install&lt;/code&gt; is more often for installers. &lt;/p&gt;
+&lt;p&gt;The core function in the setup script (setup.py by convention) is the &lt;code&gt;setup&lt;/code&gt; module in &lt;code&gt;distutils.core&lt;/code&gt;. In the script, developers call this function with many arguments which represent different parameters or goals. &lt;code&gt;sdist&lt;/code&gt; will create an archive file (e.g., tarball on Unix, ZIP file on Windows) containing the setup script and the functional modules. For users to install packages, they only need to download and unzip, then use &lt;code&gt;install&lt;/code&gt; to complete installation by copying modules to the appropriate directory in python installation. &lt;/p&gt;
+&lt;p&gt;For development version of a package like scikit-learn, we can install it in two ways, one is to add the scikit-learn directory to &lt;code&gt;PYTHONPATH&lt;/code&gt; and run &lt;code&gt;python setup.py build_ext --inplace&lt;/code&gt;, the other is to run &lt;code&gt;python setup.py develop&lt;/code&gt; directly. Basically they are similar, &lt;code&gt;develop&lt;/code&gt; calls &lt;code&gt;build_ext -i&lt;/code&gt; implicitly and creates a link from the staging area (by default the site-packages dir) to the scikit-learn dir and also does a little more. The &lt;code&gt;develop&lt;/code&gt; mode is more convenient for virtualenv. Some references: &lt;a href="https://pythonhosted.org/setuptools/setuptools.html#develop-deploy-the-project-source-in-development-mode"&gt;setuptools document&lt;/a&gt;, &lt;a href="http://scikit-learn.org/stable/developers/contributing.html#retrieving-the-latest-code"&gt;scikit-learn document&lt;/a&gt; and &lt;a href="http://stackoverflow.com/questions/34408734/whats-the-advantage-of-building-extensions-inplace-when-installing-scikit-learn/34415373"&gt;a question in stackoverflow&lt;/a&gt;. Notice that &lt;em&gt;Setuptools&lt;/em&gt; is a collection of enhancements to Distutils, it can be viewed as a superset of Distutils. The setup.py file of scikit-learn tries the setup function first in Setuptools. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The rough process of installing&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Prepare the complier. This is for the &lt;code&gt;python setup.py&lt;/code&gt; commands. The MS official VC for python 2.7 doesn't work well on my computer. After searching on web, I got things done with following steps, copied from &lt;a href="http://stackoverflow.com/questions/13596407/errors-while-building-installing-c-module-for-python-2-7/19915585#19915585"&gt;this link&lt;/a&gt;:  &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Install the &lt;a href="https://go.microsoft.com/?linkid=7729279"&gt;Visual C++ 2008 Express Edition&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;Here comes another issue: this VC is free but needs registration, however the registration webpage doesn't work any more. So we have to do some hacking to register. This link is the &lt;a href="http://stackoverflow.com/questions/4422745/how-do-i-get-the-serial-key-for-visual-studio-express/30540370#30540370"&gt;instruction&lt;/a&gt;, basically just delete the relevant term in registry. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Install the Microsoft Windows SDK for Windows Server 2008 and .NET Framework 3.5, which can be found &lt;a href="https://www.microsoft.com/en-us/download/details.aspx?id=24826"&gt;here&lt;/a&gt;. &lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;To verify the installation, confirm that the Microsoft SDK contains the "amd64" version of the C/C++ compiler "cl.exe". This is usually installed into &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\amd64\cl.exe
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;copy .../VC/bin/vcvars64.bat to .../VC/bin/vcvarsamd64.bat  &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;copy .../VC/bin/vcvars64.bat to .../VC/bin/amd64/vcvarsamd64.bat&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Create an account on GitHub.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Fork the &lt;a href="http://github.com/scikit-learn/scikit-learn"&gt;project repository&lt;/a&gt;: click on the &lt;code&gt;Fork&lt;/code&gt; button near the top of the page. This creates a copy of the code under my account on the GitHub server.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Clone this copy to my local disk:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/MyAccount/scikit-learn.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Get into the specific virtualenv: go to the virtualenv directory, then&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;activate
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For virtualenv, refer to &lt;a href="https://virtualenv.readthedocs.org/en/latest/userguide.html"&gt;the documents&lt;/a&gt;. I used the &lt;code&gt;--system-site-packages&lt;/code&gt; option.&lt;br&gt;
+We are in the virtualenv now.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Get into the scikit-learn directory which contains setup.py, then&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;python setup.py develop
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Don't forget the starting command &lt;code&gt;python&lt;/code&gt;. Otherwise this line can still run but the virtualenv won't work. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Now the installing is done. For Pycharm users, when creating a new project, we need to choose the interpreter in the virtualenv. Refer to &lt;a href="https://www.jetbrains.com/pycharm/help/adding-existing-virtual-environment.html"&gt;this link&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</content><category term="scikit-learn"></category></entry><entry><title>Procedure of Blogging with Pelican and Github on Windows</title><link href="https://borzhang.github.io/procedure-of-blogging-with-pelican-and-github-on-windows.html" rel="alternate"></link><published>2016-10-02T14:45:00+08:00</published><updated>2016-10-02T14:45:00+08:00</updated><author><name>borzhang</name></author><id>tag:borzhang.github.io,2016-10-02:/procedure-of-blogging-with-pelican-and-github-on-windows.html</id><summary type="html">&lt;p&gt;First of all, writting this note highly depends on &lt;a href="https://spapas.github.io/2013/10/07/pelican-static-windows/"&gt;a tutorial&lt;/a&gt;. Many thanks to the author.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The Pelican Part&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;If you are writing articles with markdown, namely your blog article files are ended with &lt;code&gt;.md&lt;/code&gt;, then you need to install &lt;code&gt;markdown&lt;/code&gt; package in addition to &lt;code&gt;pelican&lt;/code&gt;, 
+namely &lt;code&gt;pip install pelican …&lt;/code&gt;&lt;/p&gt;&lt;/li&gt;&lt;/ol&gt;</summary><content type="html">&lt;p&gt;First of all, writting this note highly depends on &lt;a href="https://spapas.github.io/2013/10/07/pelican-static-windows/"&gt;a tutorial&lt;/a&gt;. Many thanks to the author.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The Pelican Part&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;If you are writing articles with markdown, namely your blog article files are ended with &lt;code&gt;.md&lt;/code&gt;, then you need to install &lt;code&gt;markdown&lt;/code&gt; package in addition to &lt;code&gt;pelican&lt;/code&gt;, 
+namely &lt;code&gt;pip install pelican markdown&lt;/code&gt;, otherwise your articles cannot be identified. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Create directory &lt;code&gt;username.github.io&lt;/code&gt; (main directory) under your working directory.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Under &lt;code&gt;username.github.io\&lt;/code&gt; run &lt;code&gt;cmd&lt;/code&gt;, then &lt;code&gt;pelican-quickstart&lt;/code&gt;. 
+Answer a bunch of questions, note that url is &lt;code&gt;username.github.io&lt;/code&gt;. 
+Then there will be several dirs/files created in current directory.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Under &lt;code&gt;content&lt;/code&gt; directory, edit your article, say &lt;code&gt;test.md&lt;/code&gt;. 
+Notice that you should at least add the meta data &lt;code&gt;Title: the article title&lt;/code&gt; at the head of file. 
+&lt;code&gt;Date&lt;/code&gt; is also required, or adding the following lines to &lt;code&gt;pelicanconf.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;DEFAULT_DATE = &amp;#39;fs&amp;#39;
+DATE_FORMATS = {
+    &amp;#39;en&amp;#39;: (&amp;#39;usa&amp;#39;,&amp;#39;%a, %d %b %Y&amp;#39;),
+}
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Pick a theme. I chose &lt;code&gt;pelican-boostrap3&lt;/code&gt;. 
+Just find it on internet and &lt;code&gt;git clone&lt;/code&gt; it as a folder nearby the main directory, then add &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;THEME = &amp;quot;../pelican-bootstrap3&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;in &lt;code&gt;pelicanconf.py&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Back to main directory. 
+Run the &lt;code&gt;pelican&lt;/code&gt; command to generate your site:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pelican content
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Or instead create a bat file, say, &lt;code&gt;pelrun.bat&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pelican content --debug --autoreload  --output output --settings pelicanconf.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then run &lt;code&gt;start pelrun.bat&lt;/code&gt;. 
+That will genereate your site to &lt;code&gt;output&lt;/code&gt;.
+Don't cut down this bat command, because it's in debug mode.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Get into &lt;code&gt;output&lt;/code&gt; then run &lt;code&gt;python -m pelican.server&lt;/code&gt; to preview your site.
+Or instead create another bat file, say, &lt;code&gt;pelserve.bat&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pushd output
+python -m pelican.server
+popd
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then run &lt;code&gt;start pelserve.bat&lt;/code&gt;.
+You can preview the site through &lt;a href="http://localhost:8000/"&gt;http://localhost:8000/&lt;/a&gt;, and you can even dynamically update it if you use the bat files above.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Actually the basic process of blogging involving the content is done. 
+After editting and debugging, you may want a final version to be published. 
+Back to main directory. 
+There's a subtle part of the configuration file &lt;code&gt;publishconf.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;SITEURL = &amp;#39;https://username.github.io&amp;#39;
+RELATIVE_URLS = False
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;&lt;code&gt;RELATIVE_URLS&lt;/code&gt; needs to be &lt;code&gt;False&lt;/code&gt; and &lt;code&gt;SITEURL&lt;/code&gt; needs to be started with &lt;code&gt;https://&lt;/code&gt;, otherwise problems may appear, especially with Disqus.
+Create another bat file, say, &lt;code&gt;pelpub.bat&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;pelican content --output output --settings publishconf.py
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Notice here we use a different configuration file where some publishing information stored. 
+Notice that &lt;code&gt;from pelicanconf import *&lt;/code&gt; has been added in that conf file.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In order to print math formula, you need a plugin named &lt;code&gt;render_math&lt;/code&gt;. 
+I also added a plugin named &lt;code&gt;summary&lt;/code&gt; whose function I really cannot remember.
+Download and configure them just like themes:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;PLUGIN_PATHS = [&amp;#39;../pelican-plugins&amp;#39;]
+PLUGINS = [&amp;#39;summary&amp;#39;, 
+            &amp;#39;render_math&amp;#39;,
+            &amp;#39;tag_cloud&amp;#39;,
+            ]
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Notice that &lt;code&gt;tag_cloud&lt;/code&gt; is used together with &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;DISPLAY_TAGS_ON_SIDEBAR = True
+DISPLAY_TAGS_INLINE = True
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;in the special case that pelican-bootstrap3 theme is used.
+Refer to &lt;a href="https://github.com/getpelican/pelican-themes/tree/master/pelican-bootstrap3"&gt;the readme of this theme&lt;/a&gt;. 
+I prefer to use tags than catagories.
+Btw, for this very theme, set &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;DISPLAY_ARTICLE_INFO_ON_INDEX = True
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;to display date and tags info on the default index page.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;There's other terms and options in &lt;code&gt;pelicanconf.py&lt;/code&gt; including links and social. 
+You should refer to the official site of pelican as well as readme of the theme you are using.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;To add comment function, add following line in &lt;code&gt;publishconf.py&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;DISQUS_SITENAME = &amp;quot;username&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Of course you have to resgister a Disqus account. 
+Just sign up then "get started" and input your site url.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;The Github Part&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Create a repository on github, refer to &lt;a href="https://pages.github.com/"&gt;the site of github pages&lt;/a&gt;, only the first step is enough. 
+The name will be &lt;code&gt;username.github.io&lt;/code&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;My strategy of building blog on github is like this: 
+There're two branches in the remote origin: 
+one is master, which contains the real website stuff, the other is source, which contains the source code. 
+Accordingly, there should be two branches in local repo, but &lt;code&gt;output&lt;/code&gt; is a subdirectory under main directory, it's hard to arrange one single local repo because of that file structure. 
+So it's reasonable to create two local repos pointing to the same remote repo &lt;code&gt;origin&lt;/code&gt;, one corresponding to &lt;code&gt;origin/master&lt;/code&gt; branch, the other with &lt;code&gt;origin/source&lt;/code&gt; branch. 
+The git procedure will first push the website to remote, then push the source (acutally the order does not matter). &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Get into &lt;code&gt;output&lt;/code&gt; first.
+Initialize the site repo, namely &lt;code&gt;output&lt;/code&gt;. 
+Then connect to remote repo &lt;code&gt;origin&lt;/code&gt;, push your site to it. 
+Your local branch (the unique branch you have in this local repo) &lt;code&gt;master&lt;/code&gt; will be copied to &lt;code&gt;origin/master&lt;/code&gt; branch.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git init
+git add .
+git commit -m Initial
+git remote add origin https://github.com/username/username.github.io.git
+git push origin master --force
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now you can visit you blog on http://username.github.io. &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Back to main directory. 
+In order to get the source code to cloud, you can push the whole source to github, though a non-master branch. 
+Then the url username.github.io still corresponds to &lt;code&gt;origin/master&lt;/code&gt;, namely your site files, but you also have the source code hiding in another branch.
+First add a &lt;code&gt;.gitignore&lt;/code&gt; file in main directory:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;output
+cache
+*.pyc
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then do all the git procedure:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git init
+git add .
+git commit -m Initial
+git branch -m master source
+git remote add origin https://github.com/username/username.github.io.git
+git push origin source
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;An &lt;code&gt;origin/source&lt;/code&gt; branch will be created afterwards.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Sync the blog with a new computer&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;If you are going to another place with another computer, then you need to sync the blog to your new computer. 
+The intuitive method is &lt;code&gt;git clone&lt;/code&gt;:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git clone https://github.com/username/username.github.io.git
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then a directory &lt;code&gt;username.github.io&lt;/code&gt; will be built in your current path. 
+But it seems to include only the &lt;code&gt;output&lt;/code&gt; content, namely the &lt;code&gt;remote/master&lt;/code&gt; branch. 
+Actually everything has been downloaded, as the word clone means, but only &lt;code&gt;master&lt;/code&gt; branch appears by default. 
+You can check all downloaded branches by &lt;code&gt;git branch -a&lt;/code&gt;.
+Now you need to first switch to &lt;code&gt;source&lt;/code&gt; branch, by creating a new branch with a same name in your local &lt;code&gt;origin&lt;/code&gt; repo:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git checkout -b source origin/source
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then the content in the main directory will be the &lt;code&gt;source&lt;/code&gt; branch. 
+Now you can just delete &lt;code&gt;.git&lt;/code&gt; file to completely get rid of git structure. 
+We will construct a same structure as in the original computer later.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;As the actions mentioned previously, use those batch processing files to generate and edit blog articles and publish them:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;start pelrun.bat
+start pelserve.bat
+start pelpub.bat
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Then just do the same thing as previous github part: in the &lt;code&gt;output&lt;/code&gt; directory, &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git init
+git add .
+git commit -m &amp;quot;your message&amp;quot;
+git remote add origin https://github.com/username/username.github.io.git
+git push origin master --force
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;And in the main directory, &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;git init
+git add . 
+git commit -m &amp;quot;your message&amp;quot;
+git branch -m master source
+git remote add origin https://github.com/username/username.github.io.git
+git push origin source
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;/li&gt;
+&lt;/ol&gt;</content><category term="pelican"></category></entry><entry><title>Miscellaneous</title><link href="https://borzhang.github.io/miscellaneous.html" rel="alternate"></link><published>2016-10-02T00:00:00+08:00</published><updated>2016-10-02T00:00:00+08:00</updated><author><name>borzhang</name></author><id>tag:borzhang.github.io,2016-10-02:/miscellaneous.html</id><summary type="html">&lt;p&gt;&lt;strong&gt;About Git, mintty, and Console&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The official &lt;a href="https://git-scm.com/download/win"&gt;Git for Windows&lt;/a&gt; uses &lt;a href="https://mintty.github.io/"&gt;mintty&lt;/a&gt; as the terminal by default. 
+Mintty is &lt;a href="https://chadaustin.me/2009/10/reasons-why-mintty-is-the-best-terminal-on-windows/"&gt;a quite good console for general use on windows&lt;/a&gt;, 
+it's used as a part of Cygwin, Msys or Msys2. It can be install with Cygwin or Mingw. 
+If you directly install …&lt;/p&gt;</summary><content type="html">&lt;p&gt;&lt;strong&gt;About Git, mintty, and Console&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The official &lt;a href="https://git-scm.com/download/win"&gt;Git for Windows&lt;/a&gt; uses &lt;a href="https://mintty.github.io/"&gt;mintty&lt;/a&gt; as the terminal by default. 
+Mintty is &lt;a href="https://chadaustin.me/2009/10/reasons-why-mintty-is-the-best-terminal-on-windows/"&gt;a quite good console for general use on windows&lt;/a&gt;, 
+it's used as a part of Cygwin, Msys or Msys2. It can be install with Cygwin or Mingw. 
+If you directly install mintty from Cygwin or Mingw, then there's quite a few things to do in the future, especially in the case you need 
+other languages than English, say, in the case of Chinese, you may need to refer to &lt;a href="https://jerry2yang.wordpress.com/2011/08/30/mintty-%E5%8F%AF%E4%BB%A5%E5%9C%A8windows-%E4%BD%9C%E6%A5%AD%E7%B3%BB%E7%B5%B1%E4%B8%8A%E9%81%8B%E8%A1%8C%E9%9D%9E%E5%B8%B8%E4%B8%8D%E9%8C%AF%E7%9A%84console/"&gt;this article&lt;/a&gt;. 
+And the main problems with mintty are in total two: the look and the interactive property. 
+The first one can be tackled easily. 
+The main idea of both Cygwin and Mingw is making a virtual directory structure as Linux including &lt;code&gt;/bin&lt;/code&gt;, &lt;code&gt;/etc&lt;/code&gt;, &lt;code&gt;/doc&lt;/code&gt; and so on. 
+And you can just create a file in you home directory as &lt;code&gt;.bashrc&lt;/code&gt; or &lt;code&gt;.vimrc&lt;/code&gt; in Linux, named &lt;code&gt;.minttyrc&lt;/code&gt;, containing info about the font and color settings. 
+Refer to &lt;a href="http://ciembor.github.io/4bit/#"&gt;this link&lt;/a&gt; for the color settings and &lt;a href="https://www.trueneutral.eu/2014/win-proper-term.html"&gt;this link&lt;/a&gt; for fonts.
+But the second one cannot be tackled perfectly as far as I know. 
+It means that you cannot use mintty as an alternative of the Windows command line to run Python interactive interface, because it cannot respond you correctly. &lt;/p&gt;
+&lt;p&gt;The best choice to install mintty, if your original goal is just to use Git Bash, is to install the official Git for Windows. 
+It includes a Mingw environment itself, and must with customization as much as possible against the interactive problem. 
+So at least some basic operation of Git can be done with it. 
+If you are not satisfied with the color/font settings, just modify it using the trick mentioned above. &lt;/p&gt;
+&lt;p&gt;But I still found some problems with mintty bounding with Git Bash in terms of interaction. 
+My best practice is using an alternative of Windows command line named &lt;a href="http://www.hanselman.com/blog/Console2ABetterWindowsCommandPrompt.aspx"&gt;Console&lt;/a&gt;. 
+After customization on color schemes, it can be quite convenient, I can use it smoothly with Python virtualenv and Git. 
+The only con is that there's no reminder indicating which branch you are in currently. 
+I prefer it anyway. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;About virtualenv&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The best references are &lt;a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/"&gt;the Hitchhiker's Guide&lt;/a&gt; and 
+&lt;a href="https://virtualenv.readthedocs.io/en/latest/userguide/"&gt;the official document&lt;/a&gt;. 
+The former is preferred for a quick glance. 
+And another trick is to avoid installing packages in non-virtual environment, which can be done by 
+editing (creating) &lt;code&gt;%HOME%/pip/pip.ini&lt;/code&gt; with following lines:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;    [global]
+    require-virtualenv = true
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;For all operating systems, refer to &lt;a href="http://docs.python-guide.org/en/latest/dev/pip-virtualenv/"&gt;the Hitchhiker's Guide&lt;/a&gt;. 
+By the way, the default value of variable &lt;code&gt;%HOME%&lt;/code&gt; on Windows is &lt;code&gt;C:\users\yourname\&lt;/code&gt;, at least in my case. 
+All configuration files should be put there, such as &lt;code&gt;.vimrc&lt;/code&gt; and &lt;code&gt;.minttyrc&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;About Kile on Windows&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;First install Tex live, just google and run the installer. It takes quite a long time.
+At the same time, download the &lt;a href="http://download.kde.org/stable/kdewin/installer/kdewin-installer-gui-latest.exe.mirrorlist"&gt;installer of KDE for Windows&lt;/a&gt;. Here's &lt;a href="http://kile.sourceforge.net/wiki/index.php?title=KileOnWindows"&gt;a reference&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;About Intel MKL, numpy and others&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Intel MKL has been released for free again, you can find it on the official website. 
+I tried to follow &lt;a href="https://software.intel.com/en-us/articles/building-numpyscipy-with-intel-mkl-and-intel-fortran-on-windows"&gt;this guide&lt;/a&gt; to build manually numpy with Intel MKL, but failed for unknown reason. 
+I was told that I'd better install Intel python. Refer to &lt;a href="https://software.intel.com/en-us/comment/1886592#comment-1886592"&gt;my post&lt;/a&gt; on Intel MKL forum. 
+Intel python is a standalone python distribution including everything related to science computation installed. 
+You can install it, activate it, then install virtualenv with pip, in order to create virtual environments under this distribution. 
+To install development version of scikit-learn, just uninstall scikit-learn first, then create a virtual env, follow &lt;a href="./notes-of-installing-the-development-version-of-scikit-learn.html"&gt;this note&lt;/a&gt;.&lt;/p&gt;</content><category term="tips"></category></entry></feed>
