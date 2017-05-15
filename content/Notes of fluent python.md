@@ -157,4 +157,9 @@ I'm just writing my understanding, or copying & pasting some segments from the b
 
 * __Tips on dictionaries and sets (Chapter 3)__
 
-	
+	* the UML of mappings
+	* hashing principle
+	* the advantage of `setdefault` comparing with `get`
+	* the proxy object for immutable mapping
+	* mappings cost space
+	* user should not inherit built-in types. use the types in `collections` instead
