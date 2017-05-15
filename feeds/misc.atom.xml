@@ -164,6 +164,14 @@ Here's a smart example in the book, notice that it uses binary search instead of
 &lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;&lt;strong&gt;Tips on dictionaries and sets (Chapter 3)&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the UML of mappings&lt;/li&gt;
+&lt;li&gt;hashing principle&lt;/li&gt;
+&lt;li&gt;the advantage of &lt;code&gt;setdefault&lt;/code&gt; comparing with &lt;code&gt;get&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;the proxy object for immutable mapping&lt;/li&gt;
+&lt;li&gt;mappings cost space&lt;/li&gt;
+&lt;li&gt;user should not inherit built-in types. use the types in &lt;code&gt;collections&lt;/code&gt; instead&lt;/li&gt;
+&lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;</content><category term="python"></category></entry><entry><title>Notes on Python</title><link href="https://borzhang.github.io/notes-on-python.html" rel="alternate"></link><published>2016-10-06T00:00:00+08:00</published><updated>2016-10-06T00:00:00+08:00</updated><author><name>borzhang</name></author><id>tag:borzhang.github.io,2016-10-06:/notes-on-python.html</id><summary type="html">&lt;p&gt;Ah, I love python. Oh no, it's Python. Here's a memo just for myself, it's quite conceptional, not just a copy from document. It will be updated at any time. &lt;/p&gt;
 &lt;ul&gt;
